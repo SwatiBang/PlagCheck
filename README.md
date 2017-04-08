@@ -1,0 +1,2 @@
+# PlagCheck
+Plagiraism checker 
