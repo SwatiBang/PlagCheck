@@ -27,6 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+JARS_KEY = '050814a54ac5c81b990140c3c43278031d391676'
+
+AUTH_USER_MODEL = 'plagarismChecker.VogonUser'
+
+LOGOUT_REDIRECT_URL = '/accounts/login'
+
+SUBPATH = ''
+
 
 # Application definition
 
@@ -37,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'plagarismChecker',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
