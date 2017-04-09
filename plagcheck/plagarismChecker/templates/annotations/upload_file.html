@@ -79,6 +79,15 @@
                     <p class="text text-muted text-small"><i>{{ form.filetoupload.help_text }}</i></p>
                 </div>
                 <div class="form-group">
+                    {% for error in form.filetoupload1.errors %}
+                    <span class="label label-danger">{{ error }}</span>
+                    {% endfor %}
+
+                    <label for="filetoupload1" class="required control-label">{{ form.filetoupload1.label }}</label>
+                    {{ form.filetoupload1 }}
+                    <p class="text text-muted text-small"><i>{{ form.filetoupload1.help_text }}</i></p>
+                </div>
+                <div class="form-group">
                     {% for error in form.project.errors %}
                     <span class="label label-danger">{{ error }}</span>
                     {% endfor %}

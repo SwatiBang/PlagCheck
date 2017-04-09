@@ -73,7 +73,6 @@ import base64
 import logging
 
 
-
 # TODO: Can we replace this with the built-in Django JsonResponse?
 def json_response(func):
     def decorator(request, *args, **kwargs):
@@ -603,7 +602,7 @@ def upload_file(request):
         if form.is_valid():
 
             text = handle_file_upload(request, form)
-            return HttpResponseRedirect(reverse('text', args=[text.id]) + u'?mode=annotate')
+            return HttpResponse(json.dumps(text), content_type="application/json")
     else:
         form = UploadFileForm()
 
@@ -628,14 +627,21 @@ def handle_file_upload(request, form):
 
     """
     uploaded_file = request.FILES['filetoupload']
+    uploaded_file1 = request.FILES['filetoupload1']
     with open('name.txt', 'wb+') as destination:
         for chunk in uploaded_file.chunks():
             destination.write(chunk)
+    with open('name1.txt', 'wb+') as destination:
+        for chunk in uploaded_file1.chunks():
+            destination.write(chunk)
+    print uploaded_file1
     uri = form.cleaned_data['uri']
     text_title = form.cleaned_data['title']
     is_public = form.cleaned_data['ispublic']
     user = request.user
     file_content = None
+
+    result = printDiff('name.txt','name1.txt')
     # if uploaded_file.content_type == 'text/plain':
     #     file_content = extract_text_file(uploaded_file)
     # elif uploaded_file.content_type == 'application/pdf':
@@ -645,6 +651,7 @@ def handle_file_upload(request, form):
     if file_content != None:
         tokenized_content = tokenize(file_content)
         return save_text_instance(tokenized_content, text_title, date_created, is_public, user, uri)
+    return result
 
 
 
@@ -732,3 +739,70 @@ def user_details(request, userid, *args, **kwargs):
             'projects': projects,
         })
     return HttpResponse(template.render(context))
+
+
+
+def deep_check(d1, d2):
+    diff = 0
+    # Find non-dicts that are only in compto
+    for item in d1.items():
+        if d2.has_key(item[0]):
+            d2[item[0]] = d2[item[0]] - 1
+            if d2[item[0]] == 0:
+                del d2[item[0]]
+        else:
+            diff = diff + 1
+
+    return diff;
+
+def parseFile(filename):
+    with open(filename,'r') as f:
+        d = {}
+        q1 = []
+        first=""
+        second=""
+        third=""
+
+        count = 0
+        for line in f:
+            for word in line.split():
+                word = word.strip('.')
+                word = word.strip()
+                word = word.strip(',')
+                if len(word) > 2:
+                    count = count + 1
+                    if count > 3:
+                       q1.pop()
+
+                    q1.insert(0,word)
+                    triplet = ""
+
+                    for t in q1:
+                        triplet = triplet + ":" + t
+
+                    if d.has_key(triplet):
+                        d[triplet] = d[triplet] + 1
+                    else:
+                        d[triplet] = 1
+    return d;
+
+
+def printDiff(filename1, filename2):
+    d1 = parseFile(filename1)
+    d2 = parseFile(filename2)
+
+    f1 = filename1
+    f2 = filename2
+
+    len2 = len(d2)
+    diff1 = deep_check(d1,d2)
+    diff2 =  len(d2)
+
+    perD1 = (diff1 * 100)/len(d1)
+    perD2 = (diff2 * 100)/len2
+
+    result ={}
+    result['str1'] = f1 + " is " + str(100 - perD1) + " percentage similar to " + f2
+    result['str2'] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
+
+    return result

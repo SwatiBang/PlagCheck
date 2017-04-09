@@ -81,6 +81,10 @@ class UploadFileForm(forms.Form):
                 required=True,
                 validators=[validatefiletype],
                 help_text="Soon you'll be able to upload images, PDFs, and HTML documents!")
+    filetoupload1 = forms.FileField(label='Choose a plain text file:',
+                required=True,
+                validators=[validatefiletype],
+                help_text="Soon you'll be able to upload images, PDFs, and HTML documents!")
 
 
 class UserCreationForm(forms.ModelForm):
