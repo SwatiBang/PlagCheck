@@ -15,6 +15,7 @@ from django.contrib.auth import login,authenticate
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from os.path import expanduser
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -669,7 +670,7 @@ def handle_test_upload(request, form):
     user = request.user
     file_content = None
 
-    result = printDiff('name.txt','name1.txt')
+    result = printCompare('name.txt','name1.txt')
 
     return result
 
@@ -690,8 +691,10 @@ def handle_file_upload(request, form):
     uploaded_file = request.FILES['filetoupload']
 
     file_name = randomword(10)
-    file_name = "/Users/swati/Desktop/filedb/"+file_name
-    dir = "/Users/swati/Desktop/filedb/"
+    
+    dir = expanduser("~")
+    dir = os.path.join(dir,"filedb/")
+    file_name = dir + file_name
 
     with open(file_name, 'wb+') as destination:
         for chunk in uploaded_file.chunks():
@@ -844,6 +847,25 @@ def parseFile(filename):
                         d[triplet] = 1
     return d;
 
+def printCompare(filename1, filename2):
+    d1 = parseFile(filename1)
+    d2 = parseFile(filename2)
+
+    f1 = filename1
+    f2 = filename2
+
+    len2 = len(d2)
+    diff1 = deep_check(d1,d2)
+    diff2 =  len(d2)
+
+    perD1 = (diff1 * 100)/len(d1)
+    perD2 = (diff2 * 100)/len2
+
+    result = {}
+    result[f1] = "Your upload  is " + str(100 - perD1) + " percentage present in " + f2
+    result[f2] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
+
+    return result
 
 def printDiff(filename1, filename2):
     d1 = parseFile(filename1)
@@ -859,7 +881,6 @@ def printDiff(filename1, filename2):
     perD1 = (diff1 * 100)/len(d1)
     perD2 = (diff2 * 100)/len2
 
-    result = "Your upload  is " + str(100 - perD1) + " percentage present in " + f2
-    #result[f2] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
+    result = (100 - perD1) 
 
     return result
