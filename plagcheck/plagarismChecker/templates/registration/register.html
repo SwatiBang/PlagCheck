@@ -20,8 +20,7 @@
 	  <form action="." method="post" id="register-form" class="form-horizontal" style="margin-bottom: 0px;">{% csrf_token %}
 	  <div class="panel-body">
 		  <p class="text text-info">
-			  <strong>Get credit for your work!</strong> Creating an account is the first step to contributing to the Vogon databank. Please fill in all
-			  of the fields, below.
+			  <strong>Sign up to ITU Plagarism checker !!</strong> Check if your homework is simmilar to other fellow students.
 		  </p>
 
 					<div class="panel-body">
@@ -48,6 +47,7 @@
 									</div>
 
 								</div>
+								<br><br>
 								<div class="form-group">
 								{{ form.username.errors }}
 									<label for="username" class="required control-label col-sm-4">{{ form.username.label }}:</label>
@@ -56,6 +56,7 @@
 									</div>
 	                                <input type="hidden" name="next" value="{{ next }}" />
 								</div>
+								<br><br>
 								<div class="form-group">
 								{{ form.email.errors }}
 									<label for="email" class="required control-label col-sm-4">{% trans 'Email:' %}</label>
@@ -64,14 +65,16 @@
 									</div>
 									<input type="hidden" name="next" value="{{ next }}" />
 								</div>
+								<br><br>
 								<div class="form-group">
 								{{ form.password1.errors }}
 									<label for="password1" class="required control-label col-sm-4">{% trans 'Password:' %}</label>
-									<div class="col-sm-6">
+									<div class="col-sm-4">
 										{{ form.password1 }}
 									</div>
 									<input type="hidden" name="next" value="{{ next }}" />
 								</div>
+								<br><br>
 								<div class="form-group">
 								{{ form.password2.errors }}
 									<label for="password1" class="required control-label col-sm-4">{% trans 'Password (again):' %}</label>
@@ -80,31 +83,7 @@
 									</div>
 									<input type="hidden" name="next" value="{{ next }}" />
 								</div>
-								<div class="form-group">
-								{{ form.affiliation.errors }}
-									<label for="affiliation" class="required control-label col-sm-4">{% trans 'Affiliation:' %}</label>
-									<div class="col-sm-6">
-										{{ form.affiliation }}
-									</div>
-									<input type="hidden" name="next" value="{{ next }}" />
-								</div>
-								<div class="form-group">
-								{{ form.location.errors }}
-									<label for="location" class="required control-label col-sm-4">{% trans 'Location:' %}</label>
-									<div class="col-sm-6">
-										{{ form.location }}
-									</div>
-									<input type="hidden" name="next" value="{{ next }}" />
-								</div>
-                            <div class="form-group">
-								{{ form.link.errors }}
-									<label for="link" class="required control-label col-sm-4">{% trans 'Link:' %}</label>
-									<div class="col-sm-6">
-										{{ form.link }}
-									</div>
-									<input type="hidden" name="next" value="{{ next }}" />
-								</div>
-
+								<br><br>
 							<script type="text/javascript">
 							document.getElementById('id_username').focus()
 							</script>

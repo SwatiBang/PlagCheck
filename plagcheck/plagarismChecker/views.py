@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files import File
 from django.core.serializers import serialize
 from django.core.cache import caches
+from tasks import extract_text_file, extract_pdf_file, tokenize
 from django.contrib.auth import logout
 
 from django.contrib.auth import login,authenticate
@@ -64,6 +65,7 @@ import datetime
 import os
 from urlparse import urlparse
 import urllib
+import glob
 
 import json
 import time
@@ -71,7 +73,10 @@ from django.shortcuts import render
 from hashlib import sha1
 import base64
 import logging
+import random, string
 
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length))
 
 # TODO: Can we replace this with the built-in Django JsonResponse?
 def json_response(func):
@@ -169,9 +174,6 @@ def register(request):
                 form.cleaned_data['email'],
                 password=form.cleaned_data['password1'],
                 full_name=form.cleaned_data['full_name'],
-                affiliation=form.cleaned_data['affiliation'],
-                location=form.cleaned_data['location'],
-                link=form.cleaned_data['link'],
             )
 
             # TODO: Do we need this anymore?
@@ -392,21 +394,15 @@ def user_settings(request):
     else:
         form = UserChangeForm(instance=request.user)
         # Assign default image in the preview if no profile image is selected for the user.
-        if request.user.imagefile == "" or request.user.imagefile is None:
-            request.user.imagefile=settings.DEFAULT_USER_IMAGE
 
     template = loader.get_template('annotations/settings.html')
-    context = RequestContext(request, {
+    ##context = RequestContext(request, {
+    context = {
         'user': request.user,
         'full_name' : request.user.full_name,
         'email' : request.user.email,
-        'affiliation' : request.user.affiliation,
-        'location' : request.user.location,
-        'link' : request.user.link,
-        'preview' : request.user.imagefile,
-        'form': form,
         'subpath': settings.SUBPATH,
-    })
+    }
     return HttpResponse(template.render(context))
 
 
@@ -582,6 +578,41 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 @login_required
+def test(request):
+    """
+    Upload a file and save the text instance.
+
+    Parameters
+    ----------
+    request : `django.http.requests.HttpRequest`
+
+    Returns
+    ----------
+    :class:`django.http.response.HttpResponse`
+    """
+
+    project_id = request.GET.get('project', None)
+
+    if request.method == 'POST':
+        form = UploadTestForm(request.POST, request.FILES)
+        if form.is_valid():
+
+            text = handle_test_upload(request, form)
+            return HttpResponse(json.dumps(text), content_type="application/json")
+    else:
+        form = UploadTestForm()
+
+    template = loader.get_template('annotations/test.html')
+    context = {
+        'user': request.user,
+        'form': form,
+        'subpath': settings.SUBPATH,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+
+@login_required
 def upload_file(request):
     """
     Upload a file and save the text instance.
@@ -614,8 +645,7 @@ def upload_file(request):
     }
     return HttpResponse(template.render(context, request))
 
-
-def handle_file_upload(request, form):
+def handle_test_upload(request, form):
     """
     Handle the uploaded file and route it to corresponding handlers
 
@@ -635,25 +665,54 @@ def handle_file_upload(request, form):
         for chunk in uploaded_file1.chunks():
             destination.write(chunk)
     print uploaded_file1
-    uri = form.cleaned_data['uri']
-    text_title = form.cleaned_data['title']
-    is_public = form.cleaned_data['ispublic']
+    #text_title = form.cleaned_data['title']
     user = request.user
     file_content = None
 
     result = printDiff('name.txt','name1.txt')
-    # if uploaded_file.content_type == 'text/plain':
-    #     file_content = extract_text_file(uploaded_file)
-    # elif uploaded_file.content_type == 'application/pdf':
-    #     file_content = extract_pdf_file(uploaded_file)
 
-    # Save the content if the above extractors extracted something
-    if file_content != None:
-        tokenized_content = tokenize(file_content)
-        return save_text_instance(tokenized_content, text_title, date_created, is_public, user, uri)
     return result
 
 
+
+
+def handle_file_upload(request, form):
+    """
+    Handle the uploaded file and route it to corresponding handlers
+
+    Parameters
+    ----------
+    request : `django.http.requests.HttpRequest`
+    form : `django.forms.Form`
+        The form with uploaded content
+
+    """
+    uploaded_file = request.FILES['filetoupload']
+
+    file_name = randomword(10)
+    file_name = "/Users/swati/Desktop/filedb/"+file_name
+    dir = "/Users/swati/Desktop/filedb/"
+
+    with open(file_name, 'wb+') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+	destination.close()
+
+    text_title = form.cleaned_data['title']
+    user = request.user
+    file_content = None
+
+    if uploaded_file.content_type == 'text/plain':
+        file_content = extract_text_file(uploaded_file)
+    elif uploaded_file.content_type == 'application/pdf':
+        file_content = extract_pdf_file(uploaded_file)
+
+    file_list = glob.glob(dir+"*")
+    result = {}
+    for file in file_list:
+	result[file] = printDiff(file,file_name)
+    
+    return result.values()
 
 
 def user_details(request, userid, *args, **kwargs):
@@ -733,7 +792,6 @@ def user_details(request, userid, *args, **kwargs):
             'relation_count': relation_count,
             'appellation_count': appellation_count,
             'text_count': textAnnotated,
-            'default_user_image' : settings.DEFAULT_USER_IMAGE,
             'annotation_per_week' : annotation_per_week,
             'recent_activity': _get_recent_annotations(user=user),
             'projects': projects,
@@ -801,8 +859,7 @@ def printDiff(filename1, filename2):
     perD1 = (diff1 * 100)/len(d1)
     perD2 = (diff2 * 100)/len2
 
-    result ={}
-    result['str1'] = f1 + " is " + str(100 - perD1) + " percentage similar to " + f2
-    result['str2'] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
+    result = "Your upload  is " + str(100 - perD1) + " percentage present in " + f2
+    #result[f2] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
 
     return result

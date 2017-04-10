@@ -26,9 +26,6 @@ class RegistrationForm(forms.Form):
                                                                       render_value=False)), label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True, max_length=30,
                                                                       render_value=False)), label=_("Password (again)"))
-    affiliation = forms.CharField(required=True, max_length=30, label=_("Affliation"))
-    location = forms.CharField(required=True, max_length=30, label=_("Location"))
-    link = forms.URLField(required=True, max_length=500, label=_("Link"))
 
 
     def clean_username(self):
@@ -69,23 +66,25 @@ def validatefiletype(file):
         raise ValidationError('Please choose a plain text file')
 
 
-class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=255, required=True,
-                            help_text='The title of the original resource.')
-    uri = forms.CharField(label='URI', max_length=255, required=True,
-                            help_text='"URI" stands for Uniform Resource Identifier. This can be a DOI, a permalink to a digital archive (e.g. JSTOR), or any other unique identifier.')
-    ispublic = forms.BooleanField(label='Make this text public',
-                required=False,
-                help_text='By checking this box you affirm that you have the right to make this file publicly available.')
+class UploadTestForm(forms.Form):
     filetoupload = forms.FileField(label='Choose a plain text file:',
                 required=True,
                 validators=[validatefiletype],
-                help_text="Soon you'll be able to upload images, PDFs, and HTML documents!")
+                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css")
     filetoupload1 = forms.FileField(label='Choose a plain text file:',
                 required=True,
                 validators=[validatefiletype],
-                help_text="Soon you'll be able to upload images, PDFs, and HTML documents!")
+                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css")
 
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=255, required=True,
+                            help_text='The title of the original resource.')
+    filetoupload = forms.FileField(label='Choose a plain text file:',
+                required=True,
+                validators=[validatefiletype],
+                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css")
 
 class UserCreationForm(forms.ModelForm):
 
@@ -94,7 +93,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = VogonUser
-        fields = ('full_name', 'email', 'affiliation', 'location', 'link', 'imagefile')
+        fields = ('full_name', 'email')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -117,8 +116,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = VogonUser
-        fields = ('full_name', 'email', 'affiliation', 'location', 'imagefile',
-                   'link')
+        fields = ('full_name', 'email')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
