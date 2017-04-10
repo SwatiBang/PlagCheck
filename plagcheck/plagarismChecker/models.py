@@ -17,11 +17,10 @@ from django.contrib.auth.models import (
 from django.utils.translation import ugettext_lazy as _
 
 import ast
-import networkx as nx
 
 
 class VogonUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, full_name=None, affiliation=None, location=None, link=None):
+    def create_user(self, username, email, password=None, full_name=None):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -29,9 +28,6 @@ class VogonUserManager(BaseUserManager):
             username=username,
             email=self.normalize_email(email),
             full_name=full_name,
-            affiliation=affiliation,
-            location=location,
-            link=link
         )
 
         user.set_password(password)
@@ -56,9 +52,6 @@ class VogonUser(AbstractBaseUser, PermissionsMixin):
         max_length=255,
     )
 
-    affiliation = models.CharField(max_length=255, blank=True, null=True)
-    location = models.CharField(max_length=255, blank=True, null=True)
-    link = models.URLField(max_length=500, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     conceptpower_uri = models.URLField(max_length=500, blank=True, null=True)
     imagefile = models.URLField(blank=True, null=True)

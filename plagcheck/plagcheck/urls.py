@@ -57,5 +57,6 @@ urlpatterns = [
     url(r'^users/$', views.list_user, name = 'users'),
     url(r'^users/(?P<userid>[0-9]+)/$', views.user_details, name="user_details"),
     url(r'^upload/$', views.upload_file, name="file_upload"),
+    url(r'^test/$', views.test, name="test"),
 ] 
 
