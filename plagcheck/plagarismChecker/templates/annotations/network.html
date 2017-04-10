@@ -17,10 +17,6 @@
     overflow-y: scroll;
 }
 </style>
-<script>
-var networkEndpoint = '{% url "network-data" %}',
-    networkContainerSelector = '#networkVis';
-</script>
 
 <div class="container-fluid">
     <div class="row" style="margin-top: 15px;">
@@ -60,7 +56,6 @@ var networkEndpoint = '{% url "network-data" %}',
                                             </div>
                                             {% endfor %}
                                             <input class="btn btn-submit" type="submit" value="Filter" />
-                                            <a href="{% url "network" %}"><span class="btn btn-reset">Reset</span></a>
                                         </form>
                                         <script>
                                         $(function() {

@@ -43,7 +43,7 @@ from plagarismChecker import views
 handler403 = 'plagarismChecker.views.custom_403_handler'
 
 urlpatterns = [
-    url(r'^$', views.home),
+    url(r'^$', views.home, name='home'),
     url(r'^about/$', views.about, name='about'),
     url(r'^accounts/profile/', views.dashboard, name='dashboard'),
     url(r'^accounts/projects/', views.user_projects, name='user_projects'),
@@ -57,5 +57,6 @@ urlpatterns = [
     url(r'^users/$', views.list_user, name = 'users'),
     url(r'^users/(?P<userid>[0-9]+)/$', views.user_details, name="user_details"),
     url(r'^upload/$', views.upload_file, name="file_upload"),
+    url(r'^network/$', views.upload_file, name="network"),
 ] 
 

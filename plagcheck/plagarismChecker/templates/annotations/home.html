@@ -85,14 +85,8 @@ $('body').on('hide.bs.collapse', function(e) {
     							aria-haspopup="true"
     							aria-expanded="false">Texts <span class="caret"></span>
     						</a>
-    						<ul class="dropdown-menu">
-    							<li><a href="{% url "text_search" %}">All Texts</a></li>
-    							<li><a href="{% url "list_projects" %}">Projects</a></li>
-    						</ul>
-
+    						
     					</li>
-    					<li><a href="{% url "network" %}">Network</a></li>
-    					<li><a href="{% url "users" %}">Contributors</a></li>
     					<li><a href="{% url "about" %}">About</a></li>
     				</ul>
     				<div class="dropdown pull-right" id="userdropdown">
@@ -253,12 +247,7 @@ $('body').on('hide.bs.collapse', function(e) {
     <script src="{% static "annotations/js/jquery.spin.js" %}"></script>
 
     <script src="{% static 'annotations/js/cytoscape.min.js' %}"></script>
-    <script>
-    var networkEndpoint = '{% url "network-data" %}',
-        networkParams = null,
-        networkContainerSelector = '#networkViewport';
-    </script>
-
+    
     <div id="build" class="container-fluid section" style="margin-top: 15px;">
     	<div class="text-center panel-heading">
     		<span class="pull-right">
