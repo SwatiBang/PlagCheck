@@ -62,19 +62,19 @@ def validatefiletype(file):
     """
     # TODO: add PDF back in once we have a better system in place for processing
     #  large uploads.
-    if file.content_type != 'text/plain':    # file.content_type != 'application/pdf' and
-        raise ValidationError('Please choose a plain text file')
+    if file.content_type != 'text/plain' and  file.content_type != 'application/pdf':
+        raise ValidationError('ERROR: Please choose a plain text file.')
 
 
 class UploadTestForm(forms.Form):
     filetoupload = forms.FileField(label='Choose a plain text file:',
                 required=True,
                 validators=[validatefiletype],
-                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css")
+                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css, .pdf, .docx")
     filetoupload1 = forms.FileField(label='Choose a plain text file:',
                 required=True,
                 validators=[validatefiletype],
-                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css")
+                help_text="Upload files with .txt, .rb, .c, .cpp, .html, .rtf, .css, .pdf, .docx")
 
 
 

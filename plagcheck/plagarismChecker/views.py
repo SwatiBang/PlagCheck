@@ -657,20 +657,21 @@ def handle_test_upload(request, form):
         The form with uploaded content
 
     """
+
+    file_name1 = randomword(10)
+    file_name2 = randomword(10)
     uploaded_file = request.FILES['filetoupload']
     uploaded_file1 = request.FILES['filetoupload1']
-    with open('name.txt', 'wb+') as destination:
+    with open(file_name1, 'wb+') as destination:
         for chunk in uploaded_file.chunks():
             destination.write(chunk)
-    with open('name1.txt', 'wb+') as destination:
+    with open(file_name2, 'wb+') as destination:
         for chunk in uploaded_file1.chunks():
             destination.write(chunk)
-    print uploaded_file1
-    #text_title = form.cleaned_data['title']
     user = request.user
     file_content = None
 
-    result = printCompare('name.txt','name1.txt')
+    result = printCompare(file_name1,file_name2, uploaded_file.name,uploaded_file1.name)
 
     return result
 
@@ -688,10 +689,17 @@ def handle_file_upload(request, form):
         The form with uploaded content
 
     """
+    import ntpath
     uploaded_file = request.FILES['filetoupload']
 
     file_name = randomword(10)
     
+    # file_map = FileMap()
+    # file_map.actual_file_name = uploaded_file.name
+    # file_map.random_file_name = file_name
+
+    # file_map.save()
+
     dir = expanduser("~")
     dir = os.path.join(dir,"filedb/")
     file_name = dir + file_name
@@ -713,9 +721,10 @@ def handle_file_upload(request, form):
     file_list = glob.glob(dir+"*")
     result = {}
     for file in file_list:
-	result[file] = printDiff(file,file_name)
+        #cur_file_name = FileMap.objects.filter(random_file_name=ntpath.basename(file))
+        result[file] = printDiff(file,file_name)
     
-    return result.values()
+    return result
 
 
 def user_details(request, userid, *args, **kwargs):
@@ -847,7 +856,7 @@ def parseFile(filename):
                         d[triplet] = 1
     return d;
 
-def printCompare(filename1, filename2):
+def printCompare(filename1, filename2, actual_name1, actual_name2):
     d1 = parseFile(filename1)
     d2 = parseFile(filename2)
 
@@ -862,12 +871,14 @@ def printCompare(filename1, filename2):
     perD2 = (diff2 * 100)/len2
 
     result = {}
-    result[f1] = "Your upload  is " + str(100 - perD1) + " percentage present in " + f2
-    result[f2] = f2 + " is " + str(100 - perD2) + " percentage similar to " + f1
+    result[actual_name1] = "Your upload  is " + str(100 - perD1) + " percentage present in " + actual_name2
+    result[actual_name2] = actual_name2 + " is " + str(100 - perD2) + " percentage similar to " + actual_name1
 
     return result
 
 def printDiff(filename1, filename2):
+
+
     d1 = parseFile(filename1)
     d2 = parseFile(filename2)
 

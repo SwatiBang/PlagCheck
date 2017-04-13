@@ -1,27 +1,31 @@
 {% load staticfiles %}
 
-<div id="header" align="center">
+
+<link rel="stylesheet" href="{% static 'css/annotations.css' %}">
+<div id="header" align="center" id ="box1">
 					<br>
-	<h1> ITU Plagarism Checker !!! </h1>
-	<nav class="navbar navbar-inverse">
-			<div id="navbar" class="collapse navbar-collapse">
-				<div class="dropdown pull-right" id="userdropdown">
+	<h1> PlagCheck  </h1>
+	<h3> ITU's Plagarism Checker !!!</h3>
+	<hr>
+	<nav>
+			<div id=box2>
+				<div>
 					{% if user.is_authenticated  %}
 					<br>
 					<ul class="dropdown-menu" aria-labelledby="usermenu">
-						<a href="/accounts/profile/">Dashboard</a>
-						<a href="/test/">Test</a>
-						<a href="/upload/">Upload</a>
-						<a href="/accounts/settings/">Settings</a>
-						<a href="/accounts/logout/">Log Out</a>
+						<a href="/accounts/profile/">Dashboard</a>&nbsp; &nbsp;&nbsp;&nbsp;
+						<a href="/test/">Test</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="/upload/">Upload</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="/accounts/settings/">Update</a>&nbsp;&nbsp;&nbsp;
+						<a href="/accounts/logout/">Log Out</a>&nbsp;&nbsp;&nbsp;
 						{% if user.is_staff %}
-							<li><a href="/admin/">Admin Site</a></li>
+							<li><a href="/admin/">Admin Site</a></li>&nbsp;&nbsp;&nbsp;&nbsp;
 						{% endif %}
 					</ul>
 					{% else %}
 					<div class="btn-group" role="group" aria-label="usermgmt">
-						<a href="/accounts/register/" class="btn btn-primary" id="registerButton">Register</a>
-						<a href="/accounts/login/" class="btn btn-primary" id="loginButton">Log In</a>
+						<a href="/accounts/register/" class="btn btn-primary" id="registerButton">Register</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="/accounts/login/" class="btn btn-primary" id="loginButton">Log In</a>&nbsp;&nbsp;&nbsp;&nbsp;
 					</div>
 					{% endif %}
 				</div>
@@ -30,3 +34,4 @@
 	</nav>
 	<br><br>
 </div>
+

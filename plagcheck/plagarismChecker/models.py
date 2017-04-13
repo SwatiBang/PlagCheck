@@ -103,6 +103,10 @@ class GroupManager(models.Manager):
     def get_by_natural_key(self, name):
         return self.get(name=name)
 
+class FileMap(models.Model):
+    actual_file_name = models.CharField(_('name'), max_length=80, unique=True)
+    random_file_name = models.CharField(_('name'), max_length=80, unique=True)
+
 
 class VogonGroup(models.Model):
 
