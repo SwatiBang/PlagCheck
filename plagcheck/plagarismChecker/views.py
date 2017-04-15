@@ -745,6 +745,7 @@ def user_details(request, userid, *args, **kwargs):
     :HTTPResponse:
         Renders an user details view based on user's authentication status.
     """
+    """
     user = get_object_or_404(VogonUser, pk=userid)
     if request.user.is_authenticated() and request.user.id == int(userid) and request.GET.get('mode', '') == 'edit':
         return HttpResponseRedirect(reverse('settings'))
@@ -809,7 +810,7 @@ def user_details(request, userid, *args, **kwargs):
             'projects': projects,
         })
     return HttpResponse(template.render(context))
-
+"""
 
 
 def deep_check(d1, d2):

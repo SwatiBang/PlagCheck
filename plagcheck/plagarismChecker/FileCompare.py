@@ -25,14 +25,18 @@ def parseFile(filename):
         count = 0
         for line in f:
             for word in line.split():
+                ##Remove fullstop,comma and empty spaces
                 word = word.strip('.')
                 word = word.strip()
                 word = word.strip(',')
+
+                ##Consider only words with legnth greater than 2
                 if len(word) > 2:
                     count = count + 1
+                    ## Use queue to make triplets of 3 
                     if count > 3:
                        q1.pop()
-
+                       
                     q1.insert(0,word)
                     triplet = ""
 
