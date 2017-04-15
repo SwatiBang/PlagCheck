@@ -598,8 +598,11 @@ def test(request):
         form = UploadTestForm(request.POST, request.FILES)
         if form.is_valid():
 
-            text = handle_test_upload(request, form)
-            return HttpResponse(json.dumps(text), content_type="application/json")
+            # text = handle_test_upload(request, form)
+            template = loader.get_template('annotations/test.html')
+            context ={'user': request.user,'similarity': 70,'subpath': settings.SUBPATH,}
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse(json.dumps(text), content_type="application/json")
     else:
         form = UploadTestForm()
 
@@ -632,7 +635,9 @@ def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-
+        	# template = loader.get_template('annotations/chart.html')
+        	# context ={'user': request.user,'similarity': 70,'subpath': settings.SUBPATH,}
+        	# return HttpResponse(template.render(context, request))
             text = handle_file_upload(request, form)
             return HttpResponse(json.dumps(text), content_type="application/json")
     else:
@@ -723,10 +728,19 @@ def handle_file_upload(request, form):
     print file_list
     for file in file_list:
         cur_file_name = FileMap.objects.filter(random_file_name=ntpath.basename(file))
-        result[file] = printDiff(file,file_name)
-        print cur_file_name
+        print file_name, file
+        if ntpath.basename(file_name) != ntpath.basename(file):
+	        if cur_file_name is not None and cur_file_name[0].actual_file_name is not None:
+	        	result[cur_file_name[0].actual_file_name] = printDiff(file,file_name)
+	        else:
+	        	result[file] = printDiff(file,file_name)
+	        print cur_file_name
     
-    return result
+    final_result = {}
+    cur_file_name = FileMap.objects.filter(random_file_name=ntpath.basename(file_name))
+    f_name = cur_file_name[0].actual_file_name
+    final_result[f_name.encode('ascii','ignore')] = result
+    return final_result
 
 
 def user_details(request, userid, *args, **kwargs):
