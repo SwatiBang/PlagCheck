@@ -104,7 +104,7 @@ class GroupManager(models.Manager):
         return self.get(name=name)
 
 class FileMap(models.Model):
-    actual_file_name = models.CharField(_('name'), max_length=80, unique=True)
+    actual_file_name = models.CharField(_('name'), max_length=80, unique=False)
     random_file_name = models.CharField(_('name'), max_length=80, unique=True)
 
 

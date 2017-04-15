@@ -694,11 +694,11 @@ def handle_file_upload(request, form):
 
     file_name = randomword(10)
     
-    # file_map = FileMap()
-    # file_map.actual_file_name = uploaded_file.name
-    # file_map.random_file_name = file_name
+    file_map = FileMap()
+    file_map.actual_file_name = uploaded_file.name
+    file_map.random_file_name = file_name
 
-    # file_map.save()
+    file_map.save()
 
     dir = expanduser("~")
     dir = os.path.join(dir,"filedb/")
@@ -720,9 +720,11 @@ def handle_file_upload(request, form):
 
     file_list = glob.glob(dir+"*")
     result = {}
+    print file_list
     for file in file_list:
-        #cur_file_name = FileMap.objects.filter(random_file_name=ntpath.basename(file))
+        cur_file_name = FileMap.objects.filter(random_file_name=ntpath.basename(file))
         result[file] = printDiff(file,file_name)
+        print cur_file_name
     
     return result
 
