@@ -3,6 +3,6 @@ from models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VogonUser
+        model = User
         fields = ('username', 'email', 'id', 
                   'full_name')

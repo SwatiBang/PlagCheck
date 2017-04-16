@@ -25,25 +25,17 @@ from django.contrib.auth import views as auth_views
 
 from plagarismChecker import views
 
-#Error Handlers
-handler403 = 'plagarismChecker.views.custom_403_handler'
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^about/$', views.about, name='about'),
     url(r'^accounts/profile/', views.dashboard, name='dashboard'),
-    url(r'^accounts/projects/', views.user_projects, name='user_projects'),
     url(r'^accounts/settings/$', views.user_settings, name='settings'),
     url(r'^accounts/register/$', views.register, name='register'),
     url(r'^accounts/login/$', auth_views.login, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, name="logout"),
-    url(r'^activity/$', views.recent_activity),
     url(r'^accounts/', include('django.contrib.auth.urls')),
-    url(r'^admin/', include(admin.site.urls)),
     url(r'^users/$', views.list_user, name = 'users'),
-    url(r'^users/(?P<userid>[0-9]+)/$', views.user_details, name="user_details"),
     url(r'^upload/$', views.upload_file, name="file_upload"),
-    url(r'^network/$', views.upload_file, name="network"),
     url(r'^test/$', views.test, name="test"),
 ] 
 

@@ -19,7 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 import ast
 
 
-class VogonUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, full_name=None):
         if not email:
             raise ValueError('Users must have an email address')
@@ -45,7 +45,7 @@ class VogonUserManager(BaseUserManager):
         return user
 
 
-class VogonUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(
         verbose_name='email address',
@@ -53,13 +53,10 @@ class VogonUser(AbstractBaseUser, PermissionsMixin):
     )
 
     full_name = models.CharField(max_length=255, blank=True, null=True)
-    conceptpower_uri = models.URLField(max_length=500, blank=True, null=True)
-    imagefile = models.URLField(blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
 
-    objects = VogonUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -83,16 +80,6 @@ class VogonUser(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
-
-    @property
-    def uri(self):
-        return settings.BASE_URI_NAMESPACE + reverse('user_details', args=[self.id])
-
 
 class GroupManager(models.Manager):
     """
@@ -108,23 +95,3 @@ class FileMap(models.Model):
     random_file_name = models.CharField(_('name'), max_length=80, unique=True)
 
 
-class VogonGroup(models.Model):
-
-    name = models.CharField(_('name'), max_length=80, unique=True)
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name=_('permissions'),
-        blank=True,
-    )
-
-    objects = GroupManager()
-
-    class Meta:
-        verbose_name = _('group')
-        verbose_name_plural = _('groups')
-
-    def __init__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.name,)

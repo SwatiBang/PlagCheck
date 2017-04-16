@@ -33,8 +33,8 @@ class RegistrationForm(forms.Form):
         Validates username.
         """
         try:
-            user = VogonUser.objects.get(username__iexact=self.cleaned_data['username'])
-        except VogonUser.DoesNotExist:
+            user = User.objects.get(username__iexact=self.cleaned_data['username'])
+        except User.DoesNotExist:
             return self.cleaned_data['username']
         raise forms.ValidationError(_("The username already exists. Please try another one."))
 
@@ -92,7 +92,7 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
-        model = VogonUser
+        model = User
         fields = ('full_name', 'email')
 
     def clean_password2(self):
@@ -115,7 +115,7 @@ class UserCreationForm(forms.ModelForm):
 class UserChangeForm(forms.ModelForm):
 
     class Meta:
-        model = VogonUser
+        model = User
         fields = ('full_name', 'email')
 
     def clean_password(self):

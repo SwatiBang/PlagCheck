@@ -151,7 +151,7 @@ def save_text_instance(tokenized_content, text_title, date_created, is_public, u
         The user who saved the text content
     """
     if not uri:
-        uri = 'http://vogonweb.net/' + str(uuid.uuid1())
+        uri = 'http://web.net/' + str(uuid.uuid1())
     text = Text(tokenizedContent=tokenized_content,
             title=text_title,
             created=date_created,
