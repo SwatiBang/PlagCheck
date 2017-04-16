@@ -99,37 +99,6 @@ def logout_view(request):
     logout(request)
 
 
-def home(request):
-    """
-
-    Provides a landing page containing information about the application
-    for user who are not authenticated
-
-    LoggedIn users are redirected to the dashboard view
-    ----------
-    request : HTTPRequest
-        The request for application landing page.
-    Returns
-    ----------
-    :template:
-        Renders landing page for non-loggedin user and
-        dashboard view for loggedin users.
-    """
-    template = loader.get_template('annotations/home.html')
-    user_count = 0
-    text_count = 0
-    appellation_count = 0
-    relation_count = 0
-    context =  {
-        'user_count': user_count,
-        'text_count': text_count,
-        'relation_count': relation_count,
-        'appellation_count': appellation_count,
-        'recent_combination': 0,
-        'title': 'Build the epistemic web'
-    }
-    return HttpResponse(template.render(context, request))
-
 def basepath(request):
     """
     Generate the base path (domain + path) for the site.

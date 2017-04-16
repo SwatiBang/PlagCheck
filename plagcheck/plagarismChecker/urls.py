@@ -27,14 +27,13 @@ from plagarismChecker import views
 
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
+    url(r'^$', views.dashboard, name='home'),
     url(r'^accounts/profile/', views.dashboard, name='dashboard'),
     url(r'^accounts/settings/$', views.user_settings, name='settings'),
     url(r'^accounts/register/$', views.register, name='register'),
     url(r'^accounts/login/$', auth_views.login, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, name="logout"),
     url(r'^accounts/', include('django.contrib.auth.urls')),
-    url(r'^users/$', views.list_user, name = 'users'),
     url(r'^upload/$', views.upload_file, name="file_upload"),
     url(r'^test/$', views.test, name="test"),
 ] 
