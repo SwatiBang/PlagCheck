@@ -1,15 +1,7 @@
-from django.contrib.auth.forms import UserChangeForm
 from plagarismChecker.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django import forms
-from django.forms import widgets, BaseFormSet
-from crispy_forms.helper import FormHelper
-from django.db.models import Count
-from django.db.utils import ProgrammingError
-
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
 class RegistrationForm(forms.Form):
@@ -26,7 +18,6 @@ class RegistrationForm(forms.Form):
                                                                       render_value=False)), label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True, max_length=30,
                                                                       render_value=False)), label=_("Password (again)"))
-
 
     def clean_username(self):
         """

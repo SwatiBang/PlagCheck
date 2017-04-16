@@ -1,13 +1,5 @@
 from django.db import models
 
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
-
-from django.conf import settings
-import ast
-
 from plagarismChecker.managers import repositoryManagers
 
 
@@ -15,8 +7,6 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin, Permission
 )
 from django.utils.translation import ugettext_lazy as _
-
-import ast
 
 
 class UserManager(BaseUserManager):
